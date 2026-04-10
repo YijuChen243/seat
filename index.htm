@@ -9,7 +9,7 @@
         :root { --fixed: #ffeaa7; --fixed-border: #fdcb6e; --primary: #0984e3; --bg: #f4f7f6; --success: #55efc4; --warning: #fab1a0; --purple: #6c5ce7; }
         body { font-family: "Microsoft JhengHei", sans-serif; background: var(--bg); margin: 0; display: flex; height: 100vh; overflow: hidden; }
         
-        /* 側邊欄樣式 */
+        /* 側邊欄 */
         .sidebar { width: 340px; background: white; padding: 20px; box-shadow: 2px 0 15px rgba(0,0,0,0.05); overflow-y: auto; display: flex; flex-direction: column; }
         .config-group { margin-bottom: 20px; padding: 15px; border-radius: 10px; background: #f9f9f9; border: 1px solid #eee; }
         h3 { margin-top: 0; font-size: 16px; color: #2d3436; border-left: 5px solid var(--primary); padding-left: 10px; margin-bottom: 12px; }
@@ -36,28 +36,40 @@
         #capture-area { background: white; padding: 50px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.05); min-width: fit-content; position: relative; }
         #class-title-display { text-align: center; font-size: 2.5rem; margin: 0 0 40px 0; color: #2d3436; font-weight: 800; letter-spacing: 2px; }
         .teacher-area { display: flex; justify-content: center; margin-bottom: 50px; }
-        .teacher-desk { width: 300px; height: 60px; background: #dfe6e9; border: 2px solid #b2bec3; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem; color: #636e72; letter-spacing: 15px; }
+        /* 講桌字體加大 */
+        .teacher-desk { width: 350px; height: 80px; background: #dfe6e9; border: 2px solid #b2bec3; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 2rem; color: #636e72; letter-spacing: 25px; }
+        
         .grid { display: grid; gap: 15px; justify-content: center; }
         .seat { width: 110px; height: 80px; border: 2px solid #e1e1e1; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #fff; cursor: grab; position: relative; transition: all 0.2s ease; user-select: none; }
         .seat.is-fixed { background: var(--fixed); border-color: var(--fixed-border); }
         .student-name { font-size: 1.2rem; font-weight: bold; pointer-events: none; color: #2d3436; }
         .lock-icon { position: absolute; top: 5px; right: 8px; font-size: 12px; color: #e17055; pointer-events: none; }
         
-        /* 登入遮罩 */
+        /* 登入遮罩優化 */
         #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(5px); }
         #auth-overlay.hidden { display: none; }
-        .auth-box { background: white; padding: 40px; border-radius: 15px; width: 350px; text-align: center; }
+        .auth-box { background: white; padding: 40px; border-radius: 15px; width: 400px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .auth-row { display: flex; align-items: center; margin-bottom: 15px; }
+        .auth-row label { width: 80px; text-align: right; margin-bottom: 0; margin-right: 10px; font-size: 15px; flex-shrink: 0; }
+        .auth-row input { margin-bottom: 0; }
+        .auth-switch { margin-top: 15px; font-size: 14px; color: #636e72; cursor: pointer; text-decoration: underline; }
     </style>
 </head>
 <body>
 
 <div id="auth-overlay">
     <div class="auth-box">
-        <h2 id="auth-title">教師登入</h2>
-        <input type="email" id="auth-email" placeholder="電子郵件">
-        <input type="password" id="auth-password" placeholder="密碼">
-        <button class="btn-shuffle" id="btn-auth-main" onclick="handleAuth()">登入</button>
-        <div class="auth-switch" onclick="toggleAuthMode()">還沒有帳號？註冊</div>
+        <h2 id="auth-title" style="margin-bottom: 25px;">教師登入</h2>
+        <div class="auth-row">
+            <label>帳號：</label>
+            <input type="email" id="auth-email" placeholder="請輸入電子郵件">
+        </div>
+        <div class="auth-row">
+            <label>密碼：</label>
+            <input type="password" id="auth-password" placeholder="請輸入密碼">
+        </div>
+        <button class="btn-shuffle" id="btn-auth-main" onclick="handleAuth()" style="margin-top: 10px;">登入</button>
+        <div class="auth-switch" id="auth-switch-text" onclick="toggleAuthMode()">還沒有帳號？註冊</div>
     </div>
 </div>
 
@@ -68,7 +80,7 @@
         
         <label>選擇已儲存班級</label>
         <select id="classDropdown">
-            <option value="">-- 讀取清單中... --</option>
+            <option value="">-- 讀取中... --</option>
         </select>
         
         <div style="display: flex; gap: 5px;">
@@ -82,7 +94,7 @@
     <div class="config-group">
         <h3>✏️ 教室配置</h3>
         <label>班級名稱</label>
-        <input type="text" id="classTitle" oninput="syncTitle()" placeholder="例如：資二甲班">
+        <input type="text" id="classTitle" oninput="syncTitle()" placeholder="例如：資二甲">
         <div style="display: flex; gap: 10px;">
             <div><label>欄數</label><input type="number" id="cols" value="5" min="1"></div>
             <div><label>列數</label><input type="number" id="rows" value="5" min="1"></div>
@@ -91,13 +103,13 @@
     </div>
 
     <div class="config-group">
-        <h3>👥 班級學生名單</h3>
+        <h3>👥 學生抽籤名單</h3>
         <textarea id="studentList" placeholder="每行輸入一位學生名單..."></textarea>
         <button class="btn-shuffle" onclick="shuffleNonFixed()">🎲 開始隨機抽籤</button>
     </div>
 
     <div style="font-size: 12px; color: #b2bec3; margin-top: 10px; text-align: center;">
-        教師帳號: <span id="user-display">---</span>
+        目前教師: <span id="user-display">---</span>
     </div>
     <button class="btn-out" onclick="handleLogout()">🚪 登出系統</button>
 </div>
@@ -133,11 +145,10 @@
     let draggedElement = null;
     const gridEl = document.getElementById('grid');
 
-    // --- 自動刷新班級清單 ---
     async function refreshClassList() {
         if (!currentUser) return;
         const dropdown = document.getElementById('classDropdown');
-        dropdown.innerHTML = '<option value="">-- 讀取中 --</option>';
+        dropdown.innerHTML = '<option value="">-- 讀取中... --</option>';
         try {
             const querySnapshot = await getDocs(collection(db, "users", currentUser.uid, "classes"));
             dropdown.innerHTML = '<option value="">-- 請選擇班級 --</option>';
@@ -150,16 +161,15 @@
         } catch (e) { console.error("抓取失敗", e); }
     }
 
-    // --- 下拉選單載入邏輯 ---
     window.loadFromDropdown = () => {
         const selected = document.getElementById('classDropdown').value;
-        if (!selected) return alert("請先從選單選擇班級");
+        if (!selected) return alert("請先從下拉選單選擇班級");
         document.getElementById('classTitle').value = selected;
         loadSpecificClass();
     };
 
     window.createNewClass = () => {
-        if(!confirm('確定要建立新班級？這將清空目前畫面。')) return;
+        if(!confirm('確定要建立新班級？目前未儲存內容將遺失。')) return;
         document.getElementById('classTitle').value = "";
         document.getElementById('studentList').value = "";
         syncTitle();
@@ -170,22 +180,29 @@
     window.handleAuth = async () => {
         const email = document.getElementById('auth-email').value;
         const password = document.getElementById('auth-password').value;
-        if(!email || !password) return alert('請填寫完整');
+        if(!email || !password) return alert('請完整填寫帳號與密碼');
         try {
             if (isRegisterMode) {
                 await createUserWithEmailAndPassword(auth, email, password);
                 alert('註冊成功！');
             } else { await signInWithEmailAndPassword(auth, email, password); }
-        } catch (error) { alert('驗證失敗，請檢查網路或設定。'); }
+        } catch (error) { alert('認證失敗: ' + error.message); }
+    };
+
+    // 登出時清空輸入框
+    window.handleLogout = () => {
+        signOut(auth).then(() => {
+            document.getElementById('auth-email').value = "";
+            document.getElementById('auth-password').value = "";
+        });
     };
 
     window.toggleAuthMode = () => {
         isRegisterMode = !isRegisterMode;
         document.getElementById('auth-title').innerText = isRegisterMode ? "教師註冊" : "教師登入";
         document.getElementById('btn-auth-main').innerText = isRegisterMode ? "註冊" : "登入";
+        document.getElementById('auth-switch-text').innerText = isRegisterMode ? "已有帳號？登入" : "還沒有帳號？註冊";
     };
-
-    window.handleLogout = () => signOut(auth);
 
     onAuthStateChanged(auth, (user) => {
         const overlay = document.getElementById('auth-overlay');
@@ -193,8 +210,8 @@
             currentUser = user;
             overlay.classList.add('hidden');
             document.getElementById('user-display').innerText = user.email;
-            initGrid();
-            refreshClassList();
+            initGrid(); 
+            refreshClassList(); 
         } else {
             currentUser = null;
             overlay.classList.remove('hidden');
@@ -202,12 +219,14 @@
         }
     });
 
-    window.syncTitle = () => {
-        const title = document.getElementById('classTitle').value || "請輸入班級名稱";
-        document.getElementById('class-title-display').innerText = title;
+    // 修改標題同步邏輯：自動加入「座位表」後綴
+    window.syncTitle = () => { 
+        const rawTitle = document.getElementById('classTitle').value;
+        const displayTitle = rawTitle ? rawTitle + "座位表" : "請輸入班級名稱";
+        document.getElementById('class-title-display').innerText = displayTitle; 
     };
-
-    window.confirmInit = () => { if(confirm('確定要清空原有座位嗎？')) initGrid(); };
+    
+    window.confirmInit = () => { if(confirm('確定要清空畫面上所有座位嗎？')) initGrid(); };
 
     function initGrid() {
         const c = parseInt(document.getElementById('cols').value) || 5;
@@ -221,7 +240,7 @@
             seat.innerHTML = '<span class="student-name"></span>';
             seat.onclick = () => {
                 const old = seat.querySelector('.student-name').innerText;
-                const name = prompt("學生姓名：", old);
+                const name = prompt("編輯學生姓名：", old);
                 if (name !== null) updateSeat(seat, name.trim(), name.trim() !== "");
             };
             seat.oncontextmenu = (e) => {
@@ -242,9 +261,9 @@
         if (name) {
             seat.className = 'seat occupied';
             if (fixed) seat.classList.add('is-fixed');
-        } else {
-            seat.className = 'seat empty';
-            seat.classList.remove('is-fixed');
+        } else { 
+            seat.className = 'seat empty'; 
+            seat.classList.remove('is-fixed'); 
         }
         updateLockIcon(seat);
     }
@@ -258,7 +277,10 @@
     }
 
     function setupDragAndDrop(seat) {
-        seat.ondragstart = (e) => { if(seat.classList.contains('empty')) return e.preventDefault(); draggedElement = seat; };
+        seat.ondragstart = (e) => {
+            if(seat.classList.contains('empty')) return e.preventDefault();
+            draggedElement = seat;
+        };
         seat.ondragover = (e) => e.preventDefault();
         seat.ondrop = (e) => {
             e.preventDefault();
@@ -276,11 +298,16 @@
     window.saveToCloud = async () => {
         if (!currentUser) return;
         const classTitle = document.getElementById('classTitle').value.trim();
-        if (!classTitle) return alert("請輸入班級名稱");
+        if (!classTitle) return alert("請輸入班級名稱作為儲存檔名");
+        
         const seatData = [];
         document.querySelectorAll('.seat').forEach(seat => {
-            seatData.push({ name: seat.querySelector('.student-name').innerText, isFixed: seat.classList.contains('is-fixed') });
+            seatData.push({
+                name: seat.querySelector('.student-name').innerText,
+                isFixed: seat.classList.contains('is-fixed')
+            });
         });
+
         try {
             await setDoc(doc(db, "users", currentUser.uid, "classes", classTitle), {
                 cols: document.getElementById('cols').value,
@@ -288,9 +315,9 @@
                 rawList: document.getElementById('studentList').value,
                 layout: seatData
             });
-            alert('檔案已儲存！');
-            refreshClassList(); // 儲存後自動更新下拉選單
-        } catch (e) { alert('儲存失敗'); }
+            alert('☁️ 已同步至雲端！');
+            refreshClassList();
+        } catch (e) { alert('儲存失敗，請檢查權限設定。'); }
     };
 
     async function loadSpecificClass() {
@@ -304,24 +331,28 @@
             syncTitle();
             initGrid();
             const seats = document.querySelectorAll('.seat');
-            data.layout.forEach((sDat, i) => { if(seats[i]) updateSeat(seats[i], sDat.name, sDat.isFixed); });
+            data.layout.forEach((sDat, i) => {
+                if(seats[i]) updateSeat(seats[i], sDat.name, sDat.isFixed);
+            });
         }
     }
 
     window.shuffleNonFixed = () => {
         const listText = document.getElementById('studentList').value;
         let students = listText.split('\n').map(s => s.trim()).filter(s => s !== "");
-        const availableSeats = Array.from(document.querySelectorAll('.seat')).filter(s => !s.classList.contains('is-fixed'));
-        if (students.length > availableSeats.length) return alert('座位不足！');
+        const allSeats = Array.from(document.querySelectorAll('.seat'));
+        const availableSeats = allSeats.filter(s => !s.classList.contains('is-fixed'));
+        if (students.length > availableSeats.length) return alert('學生人數大於可用座位數！');
         students.sort(() => Math.random() - 0.5);
         availableSeats.forEach(s => updateSeat(s, "", false));
         students.forEach((name, i) => updateSeat(availableSeats[i], name, false));
     };
 
     window.downloadImage = () => {
+        const title = document.getElementById('classTitle').value || "座位表";
         html2canvas(document.getElementById('capture-area'), { scale: 2 }).then(canvas => {
             const link = document.createElement('a');
-            link.download = `${document.getElementById('classTitle').value || '座位表'}.png`;
+            link.download = `${title}座位表.png`;
             link.href = canvas.toDataURL();
             link.click();
         });

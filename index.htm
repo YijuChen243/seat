@@ -9,7 +9,7 @@
         :root { --fixed: #ffeaa7; --fixed-border: #fdcb6e; --primary: #0984e3; --bg: #f4f7f6; --success: #55efc4; --warning: #fab1a0; --purple: #6c5ce7; }
         body { font-family: "Microsoft JhengHei", sans-serif; background: var(--bg); margin: 0; display: flex; height: 100vh; overflow: hidden; }
         
-        /* 側邊欄 */
+        /* 側邊欄樣式 */
         .sidebar { width: 340px; background: white; padding: 20px; box-shadow: 2px 0 15px rgba(0,0,0,0.05); overflow-y: auto; display: flex; flex-direction: column; }
         .config-group { margin-bottom: 20px; padding: 15px; border-radius: 10px; background: #f9f9f9; border: 1px solid #eee; }
         h3 { margin-top: 0; font-size: 16px; color: #2d3436; border-left: 5px solid var(--primary); padding-left: 10px; margin-bottom: 12px; }
@@ -43,10 +43,10 @@
         .student-name { font-size: 1.2rem; font-weight: bold; pointer-events: none; color: #2d3436; }
         .lock-icon { position: absolute; top: 5px; right: 8px; font-size: 12px; color: #e17055; pointer-events: none; }
         
+        /* 登入遮罩 */
         #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(5px); }
         #auth-overlay.hidden { display: none; }
         .auth-box { background: white; padding: 40px; border-radius: 15px; width: 350px; text-align: center; }
-        .auth-switch { margin-top: 15px; font-size: 14px; color: #636e72; cursor: pointer; text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -57,7 +57,7 @@
         <input type="email" id="auth-email" placeholder="電子郵件">
         <input type="password" id="auth-password" placeholder="密碼">
         <button class="btn-shuffle" id="btn-auth-main" onclick="handleAuth()">登入</button>
-        <div class="auth-switch" id="auth-switch-text" onclick="toggleAuthMode()">還沒有帳號？註冊</div>
+        <div class="auth-switch" onclick="toggleAuthMode()">還沒有帳號？註冊</div>
     </div>
 </div>
 
@@ -68,13 +68,13 @@
         
         <label>選擇已儲存班級</label>
         <select id="classDropdown">
-            <option value="">-- 讀取中... --</option>
+            <option value="">-- 讀取清單中... --</option>
         </select>
         
         <div style="display: flex; gap: 5px;">
-           <button class="btn-load" onclick="loadFromDropdown()">📂 載入</button>
-            <button class="btn-cloud" onclick="saveToCloud()">☁️ 儲存</button>
-            
+           
+            <button class="btn-load" onclick="loadFromDropdown()">📂 載入</button>
+             <button class="btn-cloud" onclick="saveToCloud()">☁️ 儲存</button>
         </div>
         <button class="btn-img" onclick="downloadImage()">🖼️ 匯出圖片</button>
     </div>
@@ -91,7 +91,7 @@
     </div>
 
     <div class="config-group">
-        <h3>👥 學生抽籤名單</h3>
+        <h3>👥 班級學生名單</h3>
         <textarea id="studentList" placeholder="每行輸入一位學生名單..."></textarea>
         <button class="btn-shuffle" onclick="shuffleNonFixed()">🎲 開始隨機抽籤</button>
     </div>
@@ -133,11 +133,11 @@
     let draggedElement = null;
     const gridEl = document.getElementById('grid');
 
-    // --- 自動抓取雲端班級清單 ---
+    // --- 自動刷新班級清單 ---
     async function refreshClassList() {
         if (!currentUser) return;
         const dropdown = document.getElementById('classDropdown');
-        dropdown.innerHTML = '<option value="">-- 讀取中... --</option>';
+        dropdown.innerHTML = '<option value="">-- 讀取中 --</option>';
         try {
             const querySnapshot = await getDocs(collection(db, "users", currentUser.uid, "classes"));
             dropdown.innerHTML = '<option value="">-- 請選擇班級 --</option>';
@@ -150,20 +150,18 @@
         } catch (e) { console.error("抓取失敗", e); }
     }
 
-    // --- 從下拉選單載入 ---
+    // --- 下拉選單載入邏輯 ---
     window.loadFromDropdown = () => {
         const selected = document.getElementById('classDropdown').value;
-        if (!selected) return alert("請先選擇班級");
+        if (!selected) return alert("請先從選單選擇班級");
         document.getElementById('classTitle').value = selected;
         loadSpecificClass();
     };
 
     window.createNewClass = () => {
-        if(!confirm('確定要建立新班級？這將清空畫面上未儲存的內容。')) return;
+        if(!confirm('確定要建立新班級？這將清空目前畫面。')) return;
         document.getElementById('classTitle').value = "";
         document.getElementById('studentList').value = "";
-        document.getElementById('cols').value = 5;
-        document.getElementById('rows').value = 5;
         syncTitle();
         initGrid();
         document.getElementById('classTitle').focus();
@@ -172,22 +170,22 @@
     window.handleAuth = async () => {
         const email = document.getElementById('auth-email').value;
         const password = document.getElementById('auth-password').value;
-        if(!email || !password) return alert('請輸入完整欄位');
+        if(!email || !password) return alert('請填寫完整');
         try {
             if (isRegisterMode) {
                 await createUserWithEmailAndPassword(auth, email, password);
                 alert('註冊成功！');
             } else { await signInWithEmailAndPassword(auth, email, password); }
-        } catch (error) { alert('認證失敗: ' + error.message); }
+        } catch (error) { alert('驗證失敗，請檢查網路或設定。'); }
     };
 
-    window.handleLogout = () => signOut(auth);
     window.toggleAuthMode = () => {
         isRegisterMode = !isRegisterMode;
         document.getElementById('auth-title').innerText = isRegisterMode ? "教師註冊" : "教師登入";
         document.getElementById('btn-auth-main').innerText = isRegisterMode ? "註冊" : "登入";
-        document.getElementById('auth-switch-text').innerText = isRegisterMode ? "已有帳號？登入" : "還沒有帳號？註冊";
     };
+
+    window.handleLogout = () => signOut(auth);
 
     onAuthStateChanged(auth, (user) => {
         const overlay = document.getElementById('auth-overlay');
@@ -195,8 +193,8 @@
             currentUser = user;
             overlay.classList.add('hidden');
             document.getElementById('user-display').innerText = user.email;
-            initGrid(); 
-            refreshClassList(); 
+            initGrid();
+            refreshClassList();
         } else {
             currentUser = null;
             overlay.classList.remove('hidden');
@@ -204,11 +202,11 @@
         }
     });
 
-    window.syncTitle = () => { 
+    window.syncTitle = () => {
         const title = document.getElementById('classTitle').value || "請輸入班級名稱";
-        document.getElementById('class-title-display').innerText = title; 
+        document.getElementById('class-title-display').innerText = title;
     };
-    
+
     window.confirmInit = () => { if(confirm('確定要清空原有座位嗎？')) initGrid(); };
 
     function initGrid() {
@@ -223,7 +221,7 @@
             seat.innerHTML = '<span class="student-name"></span>';
             seat.onclick = () => {
                 const old = seat.querySelector('.student-name').innerText;
-                const name = prompt("輸入學生姓名：", old);
+                const name = prompt("學生姓名：", old);
                 if (name !== null) updateSeat(seat, name.trim(), name.trim() !== "");
             };
             seat.oncontextmenu = (e) => {
@@ -244,9 +242,9 @@
         if (name) {
             seat.className = 'seat occupied';
             if (fixed) seat.classList.add('is-fixed');
-        } else { 
-            seat.className = 'seat empty'; 
-            seat.classList.remove('is-fixed'); 
+        } else {
+            seat.className = 'seat empty';
+            seat.classList.remove('is-fixed');
         }
         updateLockIcon(seat);
     }
@@ -260,10 +258,7 @@
     }
 
     function setupDragAndDrop(seat) {
-        seat.ondragstart = (e) => {
-            if(seat.classList.contains('empty')) return e.preventDefault();
-            draggedElement = seat;
-        };
+        seat.ondragstart = (e) => { if(seat.classList.contains('empty')) return e.preventDefault(); draggedElement = seat; };
         seat.ondragover = (e) => e.preventDefault();
         seat.ondrop = (e) => {
             e.preventDefault();
@@ -278,30 +273,14 @@
         };
     }
 
-    window.shuffleNonFixed = () => {
-        const listText = document.getElementById('studentList').value;
-        let students = listText.split('\n').map(s => s.trim()).filter(s => s !== "");
-        const allSeats = Array.from(document.querySelectorAll('.seat'));
-        const availableSeats = allSeats.filter(s => !s.classList.contains('is-fixed'));
-        if (students.length > availableSeats.length) return alert('座位不足！');
-        students.sort(() => Math.random() - 0.5);
-        availableSeats.forEach(s => updateSeat(s, "", false));
-        students.forEach((name, i) => updateSeat(availableSeats[i], name, false));
-    };
-
     window.saveToCloud = async () => {
         if (!currentUser) return;
         const classTitle = document.getElementById('classTitle').value.trim();
         if (!classTitle) return alert("請輸入班級名稱");
-        
         const seatData = [];
         document.querySelectorAll('.seat').forEach(seat => {
-            seatData.push({
-                name: seat.querySelector('.student-name').innerText,
-                isFixed: seat.classList.contains('is-fixed')
-            });
+            seatData.push({ name: seat.querySelector('.student-name').innerText, isFixed: seat.classList.contains('is-fixed') });
         });
-
         try {
             await setDoc(doc(db, "users", currentUser.uid, "classes", classTitle), {
                 cols: document.getElementById('cols').value,
@@ -309,8 +288,8 @@
                 rawList: document.getElementById('studentList').value,
                 layout: seatData
             });
-            alert('儲存成功！');
-            refreshClassList();
+            alert('檔案已儲存！');
+            refreshClassList(); // 儲存後自動更新下拉選單
         } catch (e) { alert('儲存失敗'); }
     };
 
@@ -325,17 +304,24 @@
             syncTitle();
             initGrid();
             const seats = document.querySelectorAll('.seat');
-            data.layout.forEach((sDat, i) => {
-                if(seats[i]) updateSeat(seats[i], sDat.name, sDat.isFixed);
-            });
+            data.layout.forEach((sDat, i) => { if(seats[i]) updateSeat(seats[i], sDat.name, sDat.isFixed); });
         }
     }
 
+    window.shuffleNonFixed = () => {
+        const listText = document.getElementById('studentList').value;
+        let students = listText.split('\n').map(s => s.trim()).filter(s => s !== "");
+        const availableSeats = Array.from(document.querySelectorAll('.seat')).filter(s => !s.classList.contains('is-fixed'));
+        if (students.length > availableSeats.length) return alert('座位不足！');
+        students.sort(() => Math.random() - 0.5);
+        availableSeats.forEach(s => updateSeat(s, "", false));
+        students.forEach((name, i) => updateSeat(availableSeats[i], name, false));
+    };
+
     window.downloadImage = () => {
-        const title = document.getElementById('classTitle').value || "座位表";
         html2canvas(document.getElementById('capture-area'), { scale: 2 }).then(canvas => {
             const link = document.createElement('a');
-            link.download = `${title}.png`;
+            link.download = `${document.getElementById('classTitle').value || '座位表'}.png`;
             link.href = canvas.toDataURL();
             link.click();
         });

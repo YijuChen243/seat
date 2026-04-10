@@ -10,66 +10,72 @@
         body { font-family: "Microsoft JhengHei", sans-serif; background: var(--bg); margin: 0; display: flex; height: 100vh; overflow: hidden; }
         
         /* 側邊欄 */
-        .sidebar { width: 340px; background: white; padding: 20px; box-shadow: 2px 0 15px rgba(0,0,0,0.05); overflow-y: auto; display: flex; flex-direction: column; }
+        .sidebar { width: 360px; background: white; padding: 20px; box-shadow: 2px 0 15px rgba(0,0,0,0.05); overflow-y: auto; display: flex; flex-direction: column; }
         .config-group { margin-bottom: 20px; padding: 15px; border-radius: 10px; background: #f9f9f9; border: 1px solid #eee; }
-        h3 { margin-top: 0; font-size: 16px; color: #2d3436; border-left: 5px solid var(--primary); padding-left: 10px; margin-bottom: 12px; }
+        h3 { margin-top: 0; font-size: 18px; color: #2d3436; border-left: 5px solid var(--primary); padding-left: 10px; margin-bottom: 15px; }
         
-        label { font-weight: bold; display: block; margin-bottom: 5px; color: #636e72; font-size: 13px; }
+        label { font-weight: bold; display: block; margin-bottom: 8px; color: #636e72; font-size: 15px; }
         input[type="text"], input[type="number"], input[type="email"], input[type="password"], textarea, select { 
-            width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; margin-bottom: 10px; font-size: 14px;
+            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; margin-bottom: 12px; font-size: 16px;
         }
-        textarea { height: 120px; resize: none; }
+        textarea { height: 140px; resize: none; }
         
-        button { width: 100%; padding: 12px; margin-bottom: 8px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: all 0.2s; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        /* 側邊欄按鈕加大 */
+        button { width: 100%; padding: 14px; margin-bottom: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: all 0.2s; font-size: 18px; display: flex; align-items: center; justify-content: center; gap: 8px; }
         button:hover { filter: brightness(1.05); transform: translateY(-1px); }
         
         .btn-new { background: #e17055; color: white; }
         .btn-cloud { background: var(--purple); color: white; }
         .btn-load { background: var(--success); color: #2d3436; }
         .btn-init { background: #2d3436; color: white; }
-        .btn-shuffle { background: var(--primary); color: white; font-size: 16px; }
+        .btn-shuffle { background: var(--primary); color: white; font-size: 20px; }
         .btn-img { background: var(--warning); color: #2d3436; }
-        .btn-out { background: #dfe6e9; color: #2d3436; margin-top: auto; }
+        .btn-out { background: #dfe6e9; color: #2d3436; margin-top: auto; font-size: 18px; }
         
         /* 主畫面樣式 */
         .main-content { flex-grow: 1; display: flex; align-items: center; justify-content: center; overflow: auto; padding: 40px; }
         #capture-area { background: white; padding: 50px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.05); min-width: fit-content; position: relative; }
-        #class-title-display { text-align: center; font-size: 2.5rem; margin: 0 0 40px 0; color: #2d3436; font-weight: 800; letter-spacing: 2px; }
+        #class-title-display { text-align: center; font-size: 3rem; margin: 0 0 40px 0; color: #2d3436; font-weight: 800; letter-spacing: 2px; }
         .teacher-area { display: flex; justify-content: center; margin-bottom: 50px; }
-        /* 講桌字體加大 */
-        .teacher-desk { width: 350px; height: 80px; background: #dfe6e9; border: 2px solid #b2bec3; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 2rem; color: #636e72; letter-spacing: 25px; }
+        .teacher-desk { width: 400px; height: 90px; background: #dfe6e9; border: 2px solid #b2bec3; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 2.5rem; color: #636e72; letter-spacing: 30px; }
         
-        .grid { display: grid; gap: 15px; justify-content: center; }
-        .seat { width: 110px; height: 80px; border: 2px solid #e1e1e1; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #fff; cursor: grab; position: relative; transition: all 0.2s ease; user-select: none; }
+        .grid { display: grid; gap: 18px; justify-content: center; }
+        .seat { width: 120px; height: 90px; border: 2px solid #e1e1e1; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #fff; cursor: grab; position: relative; transition: all 0.2s ease; user-select: none; }
         .seat.is-fixed { background: var(--fixed); border-color: var(--fixed-border); }
-        .student-name { font-size: 1.2rem; font-weight: bold; pointer-events: none; color: #2d3436; }
-        .lock-icon { position: absolute; top: 5px; right: 8px; font-size: 12px; color: #e17055; pointer-events: none; }
+        .student-name { font-size: 1.4rem; font-weight: bold; pointer-events: none; color: #2d3436; }
+        .lock-icon { position: absolute; top: 5px; right: 8px; font-size: 14px; color: #e17055; pointer-events: none; }
         
-        /* 登入遮罩優化 */
-        #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(5px); }
+        /* 登入畫面加大優化 */
+        #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(8px); }
         #auth-overlay.hidden { display: none; }
-        .auth-box { background: white; padding: 40px; border-radius: 15px; width: 400px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-        .auth-row { display: flex; align-items: center; margin-bottom: 15px; }
-        .auth-row label { width: 80px; text-align: right; margin-bottom: 0; margin-right: 10px; font-size: 15px; flex-shrink: 0; }
-        .auth-row input { margin-bottom: 0; }
-        .auth-switch { margin-top: 15px; font-size: 14px; color: #636e72; cursor: pointer; text-decoration: underline; }
+        .auth-box { background: white; padding: 50px; border-radius: 20px; width: 500px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .auth-box h2 { font-size: 2.5rem; margin-bottom: 35px; color: #2d3436; }
+        .auth-row { display: flex; align-items: center; margin-bottom: 20px; }
+        .auth-row label { width: 100px; text-align: right; margin-bottom: 0; margin-right: 15px; font-size: 20px; flex-shrink: 0; color: #2d3436; }
+        .auth-row input { margin-bottom: 0; padding: 15px; font-size: 18px; }
+        .btn-auth { font-size: 22px; padding: 16px; margin-top: 20px; background: var(--primary); color: white; }
+        .auth-switch { margin-top: 20px; font-size: 18px; color: #0984e3; cursor: pointer; text-decoration: underline; font-weight: bold; }
+
+        /* 教師帳號資訊加大 */
+        .user-info { font-size: 18px; color: #2d3436; margin-top: 15px; text-align: center; background: #f1f2f6; padding: 10px; border-radius: 8px; }
+        #user-display { font-weight: bold; color: var(--primary); display: block; margin-top: 5px; word-break: break-all; }
     </style>
 </head>
 <body>
 
 <div id="auth-overlay">
     <div class="auth-box">
-        <h2 id="auth-title" style="margin-bottom: 25px;">教師登入</h2>
+        <h2 id="auth-title">教師登入系統</h2>
         <div class="auth-row">
             <label>帳號：</label>
-            <input type="email" id="auth-email" placeholder="請輸入電子郵件">
+            <input type="email" id="auth-email" placeholder="請輸入電子信箱">
         </div>
         <div class="auth-row">
             <label>密碼：</label>
             <input type="password" id="auth-password" placeholder="請輸入密碼">
         </div>
-        <button class="btn-shuffle" id="btn-auth-main" onclick="handleAuth()" style="margin-top: 10px;">登入</button>
-        <div class="auth-switch" id="auth-switch-text" onclick="toggleAuthMode()">還沒有帳號？註冊</div>
+        <button class="btn-auth" id="btn-auth-main" onclick="handleAuth()">登入系統</button>
+        <div class="auth-switch" id="auth-switch-text" onclick="toggleAuthMode()">還沒有帳號？點此註冊</div>
     </div>
 </div>
 
@@ -83,12 +89,12 @@
             <option value="">-- 讀取中... --</option>
         </select>
         
-        <div style="display: flex; gap: 5px;">
+        <div style="display: flex; gap: 8px;">
+             <button class="btn-load" onclick="loadFromDropdown()">📂 載入班級</button>
+            <button class="btn-cloud" onclick="saveToCloud()">☁️ 儲存檔案</button>
            
-            <button class="btn-load" onclick="loadFromDropdown()">📂 載入</button>
-             <button class="btn-cloud" onclick="saveToCloud()">☁️ 儲存</button>
         </div>
-        <button class="btn-img" onclick="downloadImage()">🖼️ 匯出圖片</button>
+        <button class="btn-img" onclick="downloadImage()">🖼️ 匯出座位圖片</button>
     </div>
 
     <div class="config-group">
@@ -99,17 +105,18 @@
             <div><label>欄數</label><input type="number" id="cols" value="5" min="1"></div>
             <div><label>列數</label><input type="number" id="rows" value="5" min="1"></div>
         </div>
-        <button class="btn-init" onclick="confirmInit()">🔄 重新佈局 (清空原有座位)</button>
+        <button class="btn-init" onclick="confirmInit()">🔄 重新佈局 (清空座位)</button>
     </div>
 
     <div class="config-group">
         <h3>👥 學生抽籤名單</h3>
-        <textarea id="studentList" placeholder="每行輸入一位學生名單..."></textarea>
+        <textarea id="studentList" placeholder="每行輸入一位學生姓名..."></textarea>
         <button class="btn-shuffle" onclick="shuffleNonFixed()">🎲 開始隨機抽籤</button>
     </div>
 
-    <div style="font-size: 12px; color: #b2bec3; margin-top: 10px; text-align: center;">
-        目前教師: <span id="user-display">---</span>
+    <div class="user-info">
+        目前教師帳號：
+        <span id="user-display">未登入</span>
     </div>
     <button class="btn-out" onclick="handleLogout()">🚪 登出系統</button>
 </div>
@@ -186,10 +193,9 @@
                 await createUserWithEmailAndPassword(auth, email, password);
                 alert('註冊成功！');
             } else { await signInWithEmailAndPassword(auth, email, password); }
-        } catch (error) { alert('認證失敗: ' + error.message); }
+        } catch (error) { alert('認證失敗，請檢查帳號密碼或網路連線。'); }
     };
 
-    // 登出時清空輸入框
     window.handleLogout = () => {
         signOut(auth).then(() => {
             document.getElementById('auth-email').value = "";
@@ -199,9 +205,9 @@
 
     window.toggleAuthMode = () => {
         isRegisterMode = !isRegisterMode;
-        document.getElementById('auth-title').innerText = isRegisterMode ? "教師註冊" : "教師登入";
-        document.getElementById('btn-auth-main').innerText = isRegisterMode ? "註冊" : "登入";
-        document.getElementById('auth-switch-text').innerText = isRegisterMode ? "已有帳號？登入" : "還沒有帳號？註冊";
+        document.getElementById('auth-title').innerText = isRegisterMode ? "教師註冊系統" : "教師登入系統";
+        document.getElementById('btn-auth-main').innerText = isRegisterMode ? "立即註冊" : "登入系統";
+        document.getElementById('auth-switch-text').innerText = isRegisterMode ? "已有帳號？點此登入" : "還沒有帳號？點此註冊";
     };
 
     onAuthStateChanged(auth, (user) => {
@@ -219,19 +225,18 @@
         }
     });
 
-    // 修改標題同步邏輯：自動加入「座位表」後綴
     window.syncTitle = () => { 
         const rawTitle = document.getElementById('classTitle').value;
         const displayTitle = rawTitle ? rawTitle + "座位表" : "請輸入班級名稱";
         document.getElementById('class-title-display').innerText = displayTitle; 
     };
     
-    window.confirmInit = () => { if(confirm('確定要清空畫面上所有座位嗎？')) initGrid(); };
+    window.confirmInit = () => { if(confirm('確定要重新佈局並清空所有座位嗎？')) initGrid(); };
 
     function initGrid() {
         const c = parseInt(document.getElementById('cols').value) || 5;
         const r = parseInt(document.getElementById('rows').value) || 5;
-        gridEl.style.gridTemplateColumns = `repeat(${c}, 110px)`;
+        gridEl.style.gridTemplateColumns = `repeat(${c}, 120px)`;
         gridEl.innerHTML = '';
         for (let i = 0; i < c * r; i++) {
             const seat = document.createElement('div');
@@ -298,16 +303,11 @@
     window.saveToCloud = async () => {
         if (!currentUser) return;
         const classTitle = document.getElementById('classTitle').value.trim();
-        if (!classTitle) return alert("請輸入班級名稱作為儲存檔名");
-        
+        if (!classTitle) return alert("請輸入班級名稱");
         const seatData = [];
         document.querySelectorAll('.seat').forEach(seat => {
-            seatData.push({
-                name: seat.querySelector('.student-name').innerText,
-                isFixed: seat.classList.contains('is-fixed')
-            });
+            seatData.push({ name: seat.querySelector('.student-name').innerText, isFixed: seat.classList.contains('is-fixed') });
         });
-
         try {
             await setDoc(doc(db, "users", currentUser.uid, "classes", classTitle), {
                 cols: document.getElementById('cols').value,
@@ -315,9 +315,9 @@
                 rawList: document.getElementById('studentList').value,
                 layout: seatData
             });
-            alert('☁️ 已同步至雲端！');
+            alert('☁️ 已成功同步至雲端');
             refreshClassList();
-        } catch (e) { alert('儲存失敗，請檢查權限設定。'); }
+        } catch (e) { alert('儲存失敗'); }
     };
 
     async function loadSpecificClass() {
@@ -331,9 +331,7 @@
             syncTitle();
             initGrid();
             const seats = document.querySelectorAll('.seat');
-            data.layout.forEach((sDat, i) => {
-                if(seats[i]) updateSeat(seats[i], sDat.name, sDat.isFixed);
-            });
+            data.layout.forEach((sDat, i) => { if(seats[i]) updateSeat(seats[i], sDat.name, sDat.isFixed); });
         }
     }
 

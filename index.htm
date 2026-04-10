@@ -200,25 +200,41 @@ const firebaseConfig = {
     }
 
     function setupDragAndDrop(seat) {
-        seat.ondragstart = (e) => {
-            if(seat.classList.contains('empty')) return e.preventDefault();
-            draggedElement = seat;
-            seat.classList.add('dragging');
-        };
-        seat.ondragend = () => seat.classList.remove('dragging');
-        seat.ondragover = (e) => e.preventDefault();
-        seat.ondrop = (e) => {
-            e.preventDefault();
-            if (draggedElement && draggedElement !== seat) {
-                const tHTML = seat.innerHTML;
-                const tClass = seat.className;
-                seat.innerHTML = draggedElement.innerHTML;
-                seat.className = draggedElement.className;
-                draggedElement.innerHTML = tHTML;
-                draggedElement.className = tClass;
-            }
-        };
-    }
+    seat.ondragstart = (e) => {
+        if(seat.classList.contains('empty')) return e.preventDefault();
+        draggedElement = seat;
+        seat.classList.add('dragging'); // 讓被拖的變淡
+    };
+
+    seat.ondragend = () => {
+        // 結束拖拽時，確保所有座位都移除「變淡」的樣式
+        document.querySelectorAll('.seat').forEach(s => s.classList.remove('dragging'));
+    };
+
+    seat.ondragover = (e) => e.preventDefault();
+
+    seat.ondrop = (e) => {
+        e.preventDefault();
+        if (draggedElement && draggedElement !== seat) {
+            // 1. 先把拖拽中的變淡效果移除，避免標籤被帶到新位子
+            draggedElement.classList.remove('dragging');
+
+            // 2. 交換 HTML 內容 (學生名字與圖示)
+            const tHTML = seat.innerHTML;
+            seat.innerHTML = draggedElement.innerHTML;
+            draggedElement.innerHTML = tHTML;
+
+            // 3. 交換 Class (樣式狀態)
+            const tClass = seat.className;
+            seat.className = draggedElement.className;
+            draggedElement.className = tClass;
+
+            // 4. 再次保險：確保兩者顏色都回到正常
+            seat.classList.remove('dragging');
+            draggedElement.classList.remove('dragging');
+        }
+    };
+}
 
     window.shuffleNonFixed = () => {
         const listText = document.getElementById('studentList').value;
